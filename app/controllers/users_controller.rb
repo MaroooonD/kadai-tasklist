@@ -6,9 +6,14 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    unless current_user == @user
+      redirect_to root_url
+      return
+    end
     @tasks = @user.tasks.order('created_at DESC').page(params[:page])
     counts(@user)
   end
+  
 
   def new
     @user = User.new

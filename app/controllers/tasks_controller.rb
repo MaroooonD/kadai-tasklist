@@ -8,7 +8,6 @@ class TasksController < ApplicationController
   end
   
   def show
-    @task = Task.find(params[:id])
   end
   
   def new
@@ -35,7 +34,7 @@ class TasksController < ApplicationController
   def update
     if @task.update(task_params)
       flash[:success] = 'Taskが正常に更新されました'
-      redirect_to @task
+      redirect_to root_url
     else
       flash.now[:danger] = 'Taskが更新されませんでした'
       render :edit
@@ -50,7 +49,10 @@ class TasksController < ApplicationController
   
   private
   def set_task
-    @task = Task.find(params[:id])
+    @task = current_user.tasks.find_by(id: params[:id])
+    unless @task
+      redirect_to root_url
+    end
   end
   
   def task_params
